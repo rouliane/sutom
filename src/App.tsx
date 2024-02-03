@@ -1,20 +1,21 @@
 import './App.css';
-import Cell from './Letter';
+// import Letter from './Letter';
 import { useGameContext } from './gameContext';
 import useEventListener from './useEventListener';
+import Cell from "./Cell";
 
 function App() {
   const gameContext = useGameContext();
   const handler = ({ key }: { key: any }) => {
-    gameContext.enterLetter(key)
+    gameContext.typeLetter(key)
   };
   useEventListener("keydown", handler);
 
   const displayAttempt = (attemptNumber: number) => {
     return <tr>
-      {gameContext.word.split('').map((_, index) => (
-        <Cell attempt={attemptNumber} index={index}></Cell>
-      ))}
+      {/*{gameContext.wordToGuess.split('').map((_, index) => (*/}
+      {/*  <Cell attempt={attemptNumber} index={index}></Cell>*/}
+      {/*))}*/}
     </tr>;
   }
 
@@ -22,12 +23,28 @@ function App() {
     <div className="App">
         <table>
           <tbody>
-            {displayAttempt(0)}
+            {gameContext.previousAttempts.map((letters) => {
+                return <tr>
+                    {letters.map((letter) => {
+                    return <Cell content={letter.letter} isCorrect={letter.isCorrect} isMisplaced={letter.isMisplaced} />
+                    })}
+                </tr>
+            })}
+            {
+              Array.from(Array(gameContext.currentAttempt), (letters) => {
+                return <tr>
+                    {letters.map((letter) => {
+                      return <Cell content={letter.letter} />
+                    })}
+                </tr>
+            })}
+
+            {/* {displayAttempt(0)}
             {displayAttempt(1)}
             {displayAttempt(2)}
             {displayAttempt(3)}
             {displayAttempt(4)}
-            {displayAttempt(5)}
+            {displayAttempt(5)} */}
           </tbody>
         </table>
     </div>

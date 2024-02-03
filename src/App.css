@@ -20,9 +20,10 @@ table td {
   border: 1px #FFF solid;
   height: 50px;
   width: 50px;
-  font-size: 40px;
+  font-size: 36px;
   text-align: center;
   color: #FFF;
+  text-transform: uppercase;
 }
 
 table td.correct {
@@ -31,4 +32,9 @@ table td.correct {
 
 table td.misplaced {
   background-color: #FFBD00;
+}
+
+table td.no-content {
+  color: #ACD0EC;
+  vertical-align: top;
 }
