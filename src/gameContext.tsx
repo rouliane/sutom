@@ -1,10 +1,6 @@
 import React, {createContext, useContext} from 'react';
 import {GameContextType, useGame} from "./useGame";
 
-// type Attempts = {
-//     [index: number]: Attempt;
-// }
-
 export const GameContext = createContext<GameContextType>({
     wordToGuess: "",
     previousAttempts: [],
