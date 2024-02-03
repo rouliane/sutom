@@ -34,7 +34,7 @@ function App() {
               Array.from({length: MAX_ATTEMPTS - gameContext.previousAttempts.length - 1}, () => {
                 return <tr>
                     {gameContext.wordToGuess.split("").map(() => {
-                      return <Cell content={"."} />
+                      return <td></td>
                     })}
                 </tr>
             })}
