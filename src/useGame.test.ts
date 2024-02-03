@@ -18,6 +18,7 @@ import {useGame} from "./useGame";
  * - it does not support more that 6 attempts
  * - it handles the win game condition
  * - it handles the lose game condition
+ * - an attempt can't be submited if there is dots in it
  */
 
 const defaultCurrentAttempt = [
