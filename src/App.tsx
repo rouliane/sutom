@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Cell from './Letter';
+import { useGameContext } from './gameContext';
+import useEventListener from './useEventListener';
 
 function App() {
+  const gameContext = useGameContext();
+  const handler = ({ key }: { key: any }) => {
+    gameContext.enterLetter(key)
+  };
+  useEventListener("keydown", handler);
+
+  const displayAttempt = (attemptNumber: number) => {
+    return <tr>
+      {gameContext.word.split('').map((_, index) => (
+        <Cell attempt={attemptNumber} index={index}></Cell>
+      ))}
+    </tr>;
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <table>
+          <tbody>
+            {displayAttempt(0)}
+            {displayAttempt(1)}
+            {displayAttempt(2)}
+            {displayAttempt(3)}
+            {displayAttempt(4)}
+            {displayAttempt(5)}
+          </tbody>
+        </table>
     </div>
   );
 }
