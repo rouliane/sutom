@@ -39,21 +39,21 @@ test ('it can compute if the typed letter is correctly placed', () => {
     act(() => {
         result.current.typeLetter("n")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
-        {letter: "p", isCorrect: true, isMisplaced: false},
-        {letter: "n", isCorrect: true, isMisplaced: false},
-        {letter: null, isCorrect: false, isMisplaced: false},
-        {letter: null, isCorrect: false, isMisplaced: false},
-    ])
     act(() => {
-        result.current.typeLetter("e")
+        result.current.typeLetter("a")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    act(() => {
+        result.current.typeLetter("l")
+    });
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "n", isCorrect: true, isMisplaced: false},
-        {letter: "e", isCorrect: true, isMisplaced: false},
-        {letter: null, isCorrect: false, isMisplaced: false},
-    ])
+        {letter: "a", isCorrect: false, isMisplaced: false},
+        {letter: "l", isCorrect: false, isMisplaced: false},
+    ]]);
 })
 
 test('it supports only letters and dots', () => {
@@ -78,12 +78,15 @@ test('it does not allow the current attempt to be longer that the word to guess'
     act(() => {
         result.current.typeLetter("e")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "o", isCorrect: false, isMisplaced: false},
         {letter: "e", isCorrect: true, isMisplaced: false},
         {letter: "l", isCorrect: false, isMisplaced: false},
-    ])
+    ]])
 });
 
 test('it can validate an attempt and compute the result', () => {
@@ -149,13 +152,16 @@ test('it can compute if the typed letter is misplaced and is present only 1 time
     act(() => {
         result.current.typeLetter("e")
     });
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
 
-    expect(result.current.currentAttempt).toStrictEqual([
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "a", isCorrect: false, isMisplaced: false},
         {letter: "n", isCorrect: false, isMisplaced: true},
         {letter: "e", isCorrect: false, isMisplaced: true},
-    ])
+    ]])
 });
 
 test('it can compute that the the typed letter is incorrect if it does exist 1 time in the word but is already marked as correct elsewhere', () => {
@@ -169,12 +175,15 @@ test('it can compute that the the typed letter is incorrect if it does exist 1 t
     act(() => {
         result.current.typeLetter("p")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "o", isCorrect: false, isMisplaced: false},
         {letter: "o", isCorrect: false, isMisplaced: false},
         {letter: "p", isCorrect: false, isMisplaced: false},
-    ])
+    ]])
 });
 
 test('it can compute that the the typed letter is incorrect if it does exist 1 time in the word but is already marked as misplaced at a previous position in the word', () => {
@@ -194,14 +203,17 @@ test('it can compute that the the typed letter is incorrect if it does exist 1 t
     act(() => {
         result.current.typeLetter("e")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "o", isCorrect: false, isMisplaced: false},
         {letter: "e", isCorrect: false, isMisplaced: true},
         {letter: "l", isCorrect: true, isMisplaced: false},
         {letter: "e", isCorrect: false, isMisplaced: false},
         {letter: "e", isCorrect: false, isMisplaced: false},
-    ])
+    ]])
 });
 
 test('it can compute if the typed letter is misplaced with a word that contains this letter 2 times and already 1 correctly placed', () => {
@@ -221,19 +233,20 @@ test('it can compute if the typed letter is misplaced with a word that contains 
     });
     act(() => {
         result.current.typeLetter("e")
+    });act(() => {
+        result.current.typeLetter("Enter")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "e", isCorrect: true, isMisplaced: false},
         {letter: "r", isCorrect: false, isMisplaced: false},
         {letter: "d", isCorrect: false, isMisplaced: false},
         {letter: "u", isCorrect: false, isMisplaced: false},
         {letter: "e", isCorrect: false, isMisplaced: true},
-    ])
+    ]])
 });
 
 test('it can compute that the typed letter is marked as misplaced as much times as the number of occurrences of the letter in the word', () => {
-    //                                           permise
     const { result } = renderHook(() => useGame("piegees"))
     act(() => {
         result.current.typeLetter("e")
@@ -253,7 +266,10 @@ test('it can compute that the typed letter is marked as misplaced as much times 
     act(() => {
         result.current.typeLetter("e")
     });
-    expect(result.current.currentAttempt).toStrictEqual([
+    act(() => {
+        result.current.typeLetter("Enter")
+    });
+    expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
         {letter: "e", isCorrect: false, isMisplaced: true},
         {letter: "r", isCorrect: false, isMisplaced: false},
@@ -261,38 +277,7 @@ test('it can compute that the typed letter is marked as misplaced as much times 
         {letter: "i", isCorrect: false, isMisplaced: true},
         {letter: "s", isCorrect: false, isMisplaced: true},
         {letter: "e", isCorrect: false, isMisplaced: true},
-    ])
-});
-test('it can compute that the typed letter is marked as misplaced as much times as the number of occurrences of the letter in the word', () => {
-    //                                           permise
-    const { result } = renderHook(() => useGame("piegees"))
-    act(() => {
-        result.current.typeLetter("e")
-    });
-    act(() => {
-        result.current.typeLetter("r")
-    });
-    act(() => {
-        result.current.typeLetter("m")
-    });
-    act(() => {
-        result.current.typeLetter("i")
-    });
-    act(() => {
-        result.current.typeLetter("s")
-    });
-    act(() => {
-        result.current.typeLetter("e")
-    });
-    expect(result.current.currentAttempt).toStrictEqual([
-        {letter: "p", isCorrect: true, isMisplaced: false},
-        {letter: "e", isCorrect: false, isMisplaced: true},
-        {letter: "r", isCorrect: false, isMisplaced: false},
-        {letter: "m", isCorrect: false, isMisplaced: false},
-        {letter: "i", isCorrect: false, isMisplaced: true},
-        {letter: "s", isCorrect: false, isMisplaced: true},
-        {letter: "e", isCorrect: false, isMisplaced: true},
-    ])
+    ]])
 });
 
 test('it marks as incorrect a letter that exist 2 times in the word but is already correctly placed everywhere', () => {

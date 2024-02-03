@@ -91,7 +91,6 @@ const useGame = (wordToGuess: string): GameContextType => {
         //If this is the last letter, we don't update the current attempt
         if (nextLetterIndexInCurrentAttempt === -1) {
             return;
-
         }
 
         const newCurrentAttempt = [...currentAttempt];
