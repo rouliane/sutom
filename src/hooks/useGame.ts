@@ -8,18 +8,26 @@ type AttemptLetter = {
 
 type Attempt = AttemptLetter[];
 
-interface GameContextType {
+enum GameStatus {
+    INPROGRESS = "inprogress",
+    WON = "won",
+    LOST = "lost",
+}
+
+type GameType = {
     wordToGuess: string,
     previousAttempts: Attempt[],
     currentAttempt: Attempt;
     typeLetter: (letter: string) => void;
+    gameStatus: GameStatus;
 }
 
 const MAX_ATTEMPTS = 6;
 const ALLOWED_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz.';
 const defaultLetter = {letter: null, isCorrect: false, isMisplaced: false};
 
-const useGame = (wordToGuess: string): GameContextType => {
+const useGame = (wordToGuess: string): GameType => {
+    const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.INPROGRESS);
     const [previousAttempts, setPreviousAttempts] = useState<Attempt[]>([]);
     const initCurrentAttempt = () =>{
         return [
@@ -39,16 +47,21 @@ const useGame = (wordToGuess: string): GameContextType => {
         }
 
         if (typedLetter === "Enter") {
-            if (!isTypedWordLongEnough()) {
+            if (!isTypedWordLongEnough() || currentAttemptContainsDot() || gameStatus === GameStatus.WON) {
                 return;
             }
 
-            if (currentAttemptContainsDot()) {
+            const currentAttempt = evaluateCurrentAttempt();
+
+            if (isCurrentAttemptCorrect(currentAttempt)) {
+                setGameStatus(GameStatus.WON);
                 return;
             }
 
-            setPreviousAttempts([...previousAttempts, evaluateCurrentAttempt()]);
-            if (previousAttempts.length === MAX_ATTEMPTS) {
+            const newPreviousAttempts: Attempt[] = [...previousAttempts, currentAttempt];
+            setPreviousAttempts(newPreviousAttempts);
+            if (newPreviousAttempts.length === MAX_ATTEMPTS) {
+                setGameStatus(GameStatus.LOST);
                 return;
             }
             setCurrentAttempt(initCurrentAttempt());
@@ -80,7 +93,6 @@ const useGame = (wordToGuess: string): GameContextType => {
         };
         setCurrentAttempt(newCurrentAttempt);
     }
-
     const isLetterMisplaced = (typedLetter: string, letterIndex: number) => {
         if (!wordToGuess.includes(typedLetter)) {
             return false;
@@ -114,14 +126,19 @@ const useGame = (wordToGuess: string): GameContextType => {
         return newCurrentAttempt;
     }
 
+    const isCurrentAttemptCorrect = (currentAttempt: AttemptLetter[]) => {
+        return currentAttempt.every((letter) => letter.isCorrect);
+    };
+
     return {
         wordToGuess,
         previousAttempts,
         currentAttempt,
         typeLetter,
+        gameStatus,
     };
 }
 
-export {useGame, MAX_ATTEMPTS, ALLOWED_CHARACTERS};
+export {useGame, MAX_ATTEMPTS, ALLOWED_CHARACTERS, GameStatus};
 
-export type {GameContextType};
+export type {GameType};

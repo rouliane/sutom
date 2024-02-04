@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react'
-import {useGame} from "./useGame";
+import {GameStatus, MAX_ATTEMPTS, useGame} from "./useGame";
 
 /**
  * TODO
@@ -16,9 +16,9 @@ import {useGame} from "./useGame";
  * - [DONE] it can compute that the typed letter is marked as misplaced as much times as the number of occurrences of the letter in the word
  * - [DONE] it marks as incorrect a letter that exist 2 times in the word but is already correctly placed everywhere
  * - [DONE] it does not support more that 6 attempts
- * - an attempt can't be submited if there is dots in it
- * - it handles the win game condition
- * - it handles the lose game condition
+ * - [DONE] an attempt can't be submited if there is dots in it
+ * - [DONE] it handles the win game condition
+ * - [DONE] it handles the lose game condition
  */
 
 const defaultCurrentAttempt = [
@@ -29,10 +29,11 @@ const defaultCurrentAttempt = [
 ];
 
 test('it returns the default application state', () => {
-    const { result } = renderHook(() => useGame("pneu"))
-    expect(result.current.wordToGuess).toBe("pneu")
-    expect(result.current.previousAttempts).toStrictEqual([])
-    expect(result.current.currentAttempt).toStrictEqual(defaultCurrentAttempt)
+    const { result } = renderHook(() => useGame("pneu"));
+    expect(result.current.wordToGuess).toBe("pneu");
+    expect(result.current.previousAttempts).toStrictEqual([]);
+    expect(result.current.currentAttempt).toStrictEqual(defaultCurrentAttempt);
+    expect(result.current.gameStatus).toBe(GameStatus.INPROGRESS);
 })
 
 test ('it can compute if the typed letter is correctly placed', () => {
@@ -120,8 +121,8 @@ test('it can compute if the typed letter is misplaced and is present only 1 time
 
 test('it can compute that the the typed letter is incorrect if it does exist 1 time in the word but is already marked as correct elsewhere', () => {
     const { result } = renderHook(() => useGame("pneu"))
-    "oop".split("").forEach(letter => act(() => result.current.typeLetter(letter)));
-    act(() => result.current.typeLetter("Enter"));
+
+    guessWord("poop", (letter: string) => result.current.typeLetter(letter));
 
     expect(result.current.previousAttempts).toStrictEqual([[
         {letter: "p", isCorrect: true, isMisplaced: false},
@@ -196,10 +197,10 @@ test('it marks as incorrect a letter that exist 2 times in the word but is alrea
 test('it does not support more that 6 attempts', () => {
     const { result } = renderHook(() => useGame("pi"))
 
-    Array.from({length: 8}, () => {
+    for (let i = 0; i < 8; i++) {
         act(() => result.current.typeLetter("a"));
         act(() => result.current.typeLetter("Enter"));
-    });
+    }
 
     const expected = Array.from({length: 6}, () => {
         return [
@@ -224,6 +225,23 @@ test('an attempt cannot be submited if there is dots in it', () => {
         {letter: "e", isCorrect: true, isMisplaced: false},
         {letter: "u", isCorrect: true, isMisplaced: false},
     ]);
+});
+
+test('it handles the win game condition', () => {
+    const { result } = renderHook(() => useGame("pneu"))
+
+    guessWord("pneu", (letter: string) => result.current.typeLetter(letter));
+
+    expect(result.current.gameStatus).toBe(GameStatus.WON);
+});
+test('it handles the lost game condition', () => {
+    const { result } = renderHook(() => useGame("pneu"))
+
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+        guessWord("papi", (letter: string) => result.current.typeLetter(letter));
+    }
+
+    expect(result.current.gameStatus).toBe(GameStatus.LOST);
 });
 
 function guessWord(guessWord: string, typeLetterCallback: any) {
