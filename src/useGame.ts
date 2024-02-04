@@ -42,6 +42,11 @@ const useGame = (wordToGuess: string): GameContextType => {
             if (!isTypedWordLongEnough()) {
                 return;
             }
+
+            if (currentAttemptContainsDot()) {
+                return;
+            }
+
             setPreviousAttempts([...previousAttempts, evaluateCurrentAttempt()]);
             if (previousAttempts.length === MAX_ATTEMPTS) {
                 return;
@@ -62,7 +67,6 @@ const useGame = (wordToGuess: string): GameContextType => {
             return;
         }
 
-        //If this is the last letter, we don't update the current attempt
         if (nextLetterIndex === -1) {
             return;
         }
@@ -91,6 +95,10 @@ const useGame = (wordToGuess: string): GameContextType => {
 
     const isTypedWordLongEnough = () => {
         return currentAttempt.filter((attempt) => attempt.letter !== null).length === wordToGuess.length
+    }
+
+    const currentAttemptContainsDot = () => {
+        return currentAttempt.some((attempt) => attempt.letter === ".");
     }
 
     const evaluateCurrentAttempt = () => {
