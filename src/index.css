@@ -1,15 +1,15 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-  color: #FFFFFF;
-  text-align: center;
+    color: #FFFFFF;
+    text-align: center;
 }
 
 .App {
@@ -19,42 +19,42 @@ h1 {
 }
 
 body {
-  background-color: #2B2B2B;
+    background-color: #2B2B2B;
 }
 
 table {
-  border: 1px #000 solid;
-  padding: 0;
-  margin: 0;
-  border-spacing: 0;
-  background-color: #0177C7;
+    border: 1px #000 solid;
+    padding: 0;
+    margin: 0;
+    border-spacing: 0;
+    background-color: #0177C7;
 }
 
 table td {
-  border: 1px #FFF solid;
-  height: 50px;
-  width: 50px;
-  font-size: 36px;
-  text-align: center;
-  color: #FFF;
-  text-transform: uppercase;
+    border: 1px #FFF solid;
+    height: 50px;
+    width: 50px;
+    font-size: 36px;
+    text-align: center;
+    color: #FFF;
+    text-transform: uppercase;
 }
 
 table td.correct {
-  background-color: #E7012B;
+    background-color: #E7012B;
 }
 
 table td.misplaced {
-  background-color: #FFBD00;
+    background-color: #FFBD00;
 }
 
 table td.no-content {
-  color: #ACD0EC;
-  vertical-align: top;
+    color: #ACD0EC;
+    vertical-align: top;
 }
 
 .game-result {
-  text-align: center;
-  color: #FFF;
+    text-align: center;
+    color: #FFF;
 }
 

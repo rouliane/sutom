@@ -29,7 +29,7 @@ const defaultLetter = {letter: null, isCorrect: false, isMisplaced: false};
 const useGame = (wordToGuess: string): GameType => {
     const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.INPROGRESS);
     const [previousAttempts, setPreviousAttempts] = useState<Attempt[]>([]);
-    const initCurrentAttempt = () =>{
+    const initCurrentAttempt = () => {
         return [
             {letter: wordToGuess.charAt(0), isCorrect: true, isMisplaced: false},
             ...Array.from({length: wordToGuess.length - 1}, () => defaultLetter),
@@ -38,16 +38,12 @@ const useGame = (wordToGuess: string): GameType => {
     const [currentAttempt, setCurrentAttempt] = useState<Attempt>(initCurrentAttempt());
 
     const typeLetter = (typedLetter: string) => {
-        if (previousAttempts.length === MAX_ATTEMPTS) {
-            return;
-        }
-
-        if (!ALLOWED_CHARACTERS.includes(typedLetter) && typedLetter !== "Backspace" && typedLetter !== "Enter") {
+        if (gameStatus !== GameStatus.INPROGRESS || !isCharacterAllowed(typedLetter)) {
             return;
         }
 
         if (typedLetter === "Enter") {
-            if (!isTypedWordLongEnough() || currentAttemptContainsDot() || gameStatus === GameStatus.WON) {
+            if (!isTypedWordLongEnough() || currentAttemptContainsDot()) {
                 return;
             }
 
@@ -93,6 +89,7 @@ const useGame = (wordToGuess: string): GameType => {
         };
         setCurrentAttempt(newCurrentAttempt);
     }
+
     const isLetterMisplaced = (typedLetter: string, letterIndex: number) => {
         if (!wordToGuess.includes(typedLetter)) {
             return false;
@@ -103,6 +100,10 @@ const useGame = (wordToGuess: string): GameType => {
         const numberOfTimesThisLetterIsMisplacedBeforeInCurrentAttempt = currentAttempt.filter((attempt, index) => attempt.isMisplaced && attempt.letter === typedLetter && index < letterIndex).length;
 
         return letterOccurencesInWord - numberOfTimesThisLetterIsMisplacedBeforeInCurrentAttempt - numberOfTimesThisLetterIsCorrectlyPlacedInCurrentAttempt > 0;
+    }
+
+    const isCharacterAllowed = (typedLetter: string) => {
+        return ALLOWED_CHARACTERS.includes(typedLetter) || typedLetter === "Backspace" || typedLetter === "Enter";
     }
 
     const isTypedWordLongEnough = () => {

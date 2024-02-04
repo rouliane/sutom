@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
 
 const useEventListener = (eventName: string, handler: (arg: any) => void, element = window) => {
     const savedHandler = useRef<() => void | undefined>();
